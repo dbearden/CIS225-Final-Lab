@@ -6,16 +6,18 @@
  *
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-enum SUITS{ SPADE, CLUB, HEART, DIAMOND }
+typedef enum suits{ SPADE, CLUB, HEART, DIAMOND } SUITS;
 
-enum VALUES{ ACE=1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT,
-             NINE, TEN, JACK, QUEEN, KING }
+typedef enum values{ ACE=1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT,
+             NINE, TEN, JACK, QUEEN, KING } VALUES;
 
 typedef struct card{ 
-    enum SUITS suit:2; 
-    enum VALUES value:4;
+    unsigned int suit:2; 
+    unsigned int value:4;
 } CARD;
 
+void createDeck(CARD *);
