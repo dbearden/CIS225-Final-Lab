@@ -8,7 +8,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 typedef enum suits{ SPADE, CLUB, HEART, DIAMOND } SUITS;
 
@@ -20,4 +19,7 @@ typedef struct card{
     unsigned int value:4;
 } CARD;
 
+
 void createDeck(CARD *);
+
+void shuffleDeck(CARD *);
