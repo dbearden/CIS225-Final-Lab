@@ -25,3 +25,5 @@ void createDeck(CARD *);
 void shuffleDeck(CARD *);
 
 void dealHand( CARD *, CARD *, int *);
+
+int scoreHand(CARD *);
