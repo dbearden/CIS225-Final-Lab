@@ -19,9 +19,16 @@ typedef struct card{
     unsigned int value:4;
 } CARD;
 
+typedef struct cardsToSwap{
+    unsigned int mask:5;
+} CARDS_TO_SWAP;
 
 void createDeck(CARD *);
 
 void shuffleDeck(CARD *);
 
 void dealHand( CARD *, CARD *, int *);
+
+int scoreHand(CARD *);
+
+void swapCards(CARDS_TO_SWAP, CARD *, CARD *, int *);
