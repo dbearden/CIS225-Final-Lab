@@ -19,12 +19,20 @@
 #define HEART_CHAR "\xE2\x99\xA5"
 #define DIAMOND_CHAR "\xE2\x99\xA6"
 
+#define UP_LEFT_CORNER "\xE2\x94\x8C"
+#define LINE "\xE2\x94\x82"
+#define LOWER_LEFT_CORNER "\xE2\x94\x94"
+#define LOWER_RIGHT_CORNER "\xE2\x94\x98"
+#define UP_RIGHT_CORNER "\xE2\x94\x90"
+#define HORIZONTAL_LINE "\xE2\x94\x80"
+
+
 /* card window size */
 #define CARD_HEIGHT 10
 #define CARD_WIDTH 10
 
 /* Card screen locations */
-#define CARD_ROW 10
+#define CARD_ROW 12
 #define CARD1_COL 10
 #define CARD2_COL 21
 #define CARD3_COL 32
@@ -68,7 +76,7 @@ void drawCards(WINDOW *card1, WINDOW *card2, WINDOW *card3, WINDOW *card4,
  * return void
  */
 void _drawCard(WINDOW *cardWindow, CARD card ){
-    if(card.suit > 2){
+    if(card.suit > 1){
     wbkgd(cardWindow, COLOR_PAIR(2));
     }
     else {

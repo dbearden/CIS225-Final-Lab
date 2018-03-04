@@ -45,3 +45,9 @@ int scoreHand(CARD *);
 void swapCards(CARDS_TO_SWAP, CARD *, CARD *, int *);
 
 void drawCards(WINDOW *, WINDOW *, WINDOW *, WINDOW *, WINDOW *, CARD *hand);
+
+void drawScoreTable(WINDOW *);
+
+void drawBankRoll(WINDOW *, int);
+
+void drawInstructions(WINDOW *, int);
