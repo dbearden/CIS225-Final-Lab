@@ -8,6 +8,7 @@
 #include "poker.h"
 #define HAND_SIZE 5
 
+
 /*
  * Takes a 5-card hand as a sorted array
  * and returns the relevant point value 
@@ -111,3 +112,6 @@ int scoreHand(CARD *hand){
         return -50;
     }
 }
+
+
+

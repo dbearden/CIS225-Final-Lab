@@ -10,6 +10,8 @@
 
 #include "poker.h"
 
+#define CARDS_IN_DECK 52
+
 /* shuffleDeck loops through an array of 52 cards, swapping
  * the index equal to the current iteration to the index of
  * a random number. Based on psueudo code from 
@@ -20,7 +22,7 @@
 void shuffleDeck (CARD *deck){
     // seeds rand() function with the current time.
     srand(time(NULL));
-        for(int i = 51; i >= 1; i--){
+        for(int i = CARDS_IN_DECK - 1; i >= 1; i--){
             // set range for random number generated
             int random = rand() % (i + 1);
             // swap the cards

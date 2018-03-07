@@ -22,18 +22,37 @@
 #define DRAW 0;
 #define DEAL 1;
 
+/* Menu options */
+#define MOVE_RIGHT 's'
+#define MOVE_LEFT 'a'
+#define SWAP_CARD 'f'
+#define DEAL_HAND 'd'
+#define QUIT 'q'
+
+/* Moves the cursor to the next card */
 void moveCursRight(int*);
 
+/* Moves the cursor to the previous card */
 void moveCursLeft(int*);
 
-void dealRound(CARD *, CARD *, int *, int *, int *);
+/* Deals a new hand */
+void dealRound( CARD *, CARD *, int *, int *, int *);
 
-void drawRound(CARD *, int *, int *);
+/* Draw round actions */ 
+void drawRound( CARD *, CARD*, int *, int *);
 
+/* Resets the UI for the next hand */
 void resetUI(WINDOW *, WINDOW *, WINDOW *, WINDOW *,
              WINDOW *, WINDOW *, WINDOW *, CARD *, int, int);
 
+/* Replaces selected cards with next card in the deck */
 void replaceCards(CARD *, CARD*, int *, int);
+
+/* Reminds the user to deal a new hand or swap out cards */
+void drawPlayGuide(WINDOW *, int);
+
+/* sorts the hand for scoring */
+CARD *sortHand(CARD *, CARD *);
 
 int main(int argc, char *argv[]){
 
@@ -63,13 +82,14 @@ int main(int argc, char *argv[]){
     WINDOW *scoreTable;
     WINDOW *bankRollWindow;
     WINDOW *instructions;
+    WINDOW *playGuide;    
     
     // create an array for 52 CARDs.
     CARD deck[52];
     // create an array for 5 CARDs.
-    CARD hand[5];
-    // counter to keep track of how many cards have been dealt.
-    
+    CARD hand[HAND_SIZE];
+    CARD tempHand[HAND_SIZE];   
+    // counter to keep track of how many cards have been dealt.    
     int cardsDealt;
     // Counter to keep track winnings.
     int bankRoll;
@@ -93,7 +113,7 @@ int main(int argc, char *argv[]){
     drawBankRoll(bankRollWindow, bankRoll);  
     drawScoreTable(scoreTable);
     drawInstructions(instructions, dealOrDraw);
-    
+    drawPlayGuide(playGuide, dealOrDraw);
     // Deal the initial hand.
     dealHand(deck, hand, &cardsDealt);
     // Draw the hand on the screen.
@@ -107,40 +127,41 @@ int main(int argc, char *argv[]){
     
     // Let the user interact until q is entered
     do {
+                
         // Get the user's keystroke
         choice = getch();
-        
         switch(choice) {
             /* Move the cursor under the cards */
-            case 's':
+            case MOVE_RIGHT:
                 moveCursRight(&cursPos);
                 break;
-            case 'a':
+            case MOVE_LEFT:
                 moveCursLeft(&cursPos);
                 break;
             /* Deals a hand, or draws the cards to replace
              * and score the hand */
-            case 'd':
+            case DEAL_HAND:
                 if((dealOrDraw)){
-                    dealRound(deck, hand, &cardsDealt, &dealOrDraw,
+                    dealRound( deck, hand, &cardsDealt, &dealOrDraw,
                               & cursPos);
                     refresh();                     
                 }
                 else {
-                    drawRound(hand, &dealOrDraw, &bankRoll);
+                    drawRound(hand, tempHand, &dealOrDraw, &bankRoll);
                 }
+                drawPlayGuide(playGuide, dealOrDraw);
                 resetUI(card1, card2, card3, card4, card5, instructions, 
                         bankRollWindow, hand, bankRoll, dealOrDraw);
                 break;
 
-            case 'x':
+            case SWAP_CARD:
                 // Not a deal round so cards can be swapped
                 if(!dealOrDraw){
                     replaceCards(deck, hand, &cardsDealt, cursPos);
                 }                                
         }
         
-    } while(choice != 'q');
+    } while(choice != QUIT);
     endwin();
 }
 
@@ -177,7 +198,6 @@ void moveCursLeft(int *cursPos){
 
 void dealRound(CARD *deck, CARD *hand, int *cardsDealt,
                int *dealOrDraw, int *cursPos){
-
     // fill hand with the next 5 cards       
     dealHand(deck, hand, cardsDealt);
     // set dealOrDraw to draw round
@@ -189,13 +209,14 @@ void dealRound(CARD *deck, CARD *hand, int *cardsDealt,
     refresh();                    
 }
 
-void drawRound(CARD *hand, int *dealOrDraw, int *bankRoll){
+void drawRound(CARD *hand, CARD *tempHand, int *dealOrDraw, int *bankRoll){
     // Draw round, start cursor at card 1
     // Card replacements take place in other
     // functions.           
     move(CURS_ROW, CURS_POS_1);
+    tempHand = sortHand(hand, tempHand);
     // Score the hand and update score
-    *bankRoll += scoreHand(hand);
+    *bankRoll += scoreHand(tempHand);
     // Set to deal round
     *dealOrDraw = DEAL;
     refresh();
@@ -205,21 +226,21 @@ void resetUI(WINDOW *card1, WINDOW *card2, WINDOW *card3,
              WINDOW *card4, WINDOW *card5, WINDOW *instructions,
              WINDOW *bankRollWindow, CARD *hand, int bankRoll, 
              int dealOrDraw){
-   // Move the cursor to the first column
-   move(CURS_ROW, START_OF_LINE);
-   // Erase any card selection indicators
-   clrtoeol();
-   // move the cursor back to the first card
-   move(CURS_ROW, CURS_POS_1);
-   /* Draw the hand including the new cards that 
-   * were replaced in the swap */
-   drawCards(card1, card2, card3, card4, card5, hand);
-   // update the score
-   drawBankRoll(bankRollWindow, bankRoll);
-   /* Update instructions. Instructions change
-   * based on dealOrDraw value */
-   drawInstructions(instructions, dealOrDraw);
-   refresh();
+    // Move the cursor to the first column
+    move(CURS_ROW, START_OF_LINE);
+    // Erase any card selection indicators
+    clrtoeol();
+    // move the cursor back to the first card
+    move(CURS_ROW, CURS_POS_1);
+    /* Draw the hand including the new cards that 
+    * were replaced in the swap */
+    drawCards(card1, card2, card3, card4, card5, hand);
+    // update the score
+    drawBankRoll(bankRollWindow, bankRoll);
+    /* Update instructions. Instructions change
+    * based on dealOrDraw value */
+    drawInstructions(instructions, dealOrDraw);
+    refresh();
 }
 
 // assumes the user will only select a card once.
@@ -257,7 +278,7 @@ void replaceCards(CARD *deck, CARD *hand, int *cardsDealt,
             // Replace the fourth Card;
             hand[3] = deck[*cardsDealt];
             (*cardsDealt) ++;
-            mvprintw(CURS_ROW,(CURS_POS_4 -1), MARK_CARD);
+            mvprintw(CURS_ROW,(CURS_POS_4 - 1), MARK_CARD);
             refresh();
             break;
 
@@ -271,3 +292,34 @@ void replaceCards(CARD *deck, CARD *hand, int *cardsDealt,
     }
                    
 }
+
+void drawPlayGuide(WINDOW *playGuide, int dealOrDraw){
+    playGuide = newwin(2, 30, 1, 1);
+    wbkgd(playGuide, COLOR_PAIR(3));
+    if(dealOrDraw){
+        mvwprintw(playGuide, 1, 1, "Press 'd' to deal");
+    }
+    else{
+        mvwprintw(playGuide, 1, 1, "Select cards to swap");
+    }
+    refresh();
+    wrefresh(playGuide);    
+}
+
+CARD *sortHand(CARD *hand, CARD *sortedHand){
+    CARD temp;
+    for(int i = 0; i < HAND_SIZE; i++){
+        sortedHand[i] = hand[i];
+    }
+    for(int i = 0; i < HAND_SIZE - 1; i++){
+        for(int j = 0; j < HAND_SIZE - 1; j ++){
+            if(sortedHand[j].value > sortedHand[j+1].value){
+                temp = sortedHand[j];
+                sortedHand[j] = sortedHand[j+1];
+                sortedHand[j+1] = temp;
+            }
+        }
+    }
+    return sortedHand;
+}
+
