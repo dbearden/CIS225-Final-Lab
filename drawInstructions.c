@@ -21,6 +21,7 @@ void drawInstructions(WINDOW *instructions, int drawOrDeal){
     else {
         mvwprintw(instructions, 4, 1, "draw:     d");
     }
+    mvwprintw(instructions, 6,1, "Shuffle   g");
     mvwprintw(instructions, 5, 1, "quit:     q");
     wrefresh(instructions); 
 
