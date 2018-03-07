@@ -13,9 +13,10 @@ void drawInstructions(WINDOW *instructions, int drawOrDeal){
     wbkgd(instructions, COLOR_PAIR(3));
     mvwprintw(instructions, 1, 1, "Instructions");
     mvwprintw(instructions, 2, 1, "move:   a,s");
-    mvwprintw(instructions, 3, 1, "select:   x");
+    mvwprintw(instructions, 3, 1, "select:   f");
     if(drawOrDeal){
     mvwprintw(instructions, 4, 1, "deal:     d");
+    
     }
     else {
         mvwprintw(instructions, 4, 1, "draw:     d");

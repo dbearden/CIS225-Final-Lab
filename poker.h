@@ -18,6 +18,8 @@
 #define UP_RIGHT_CORNER "\xE2\x94\x90"
 #define HORIZONTAL_LINE "\xE2\x94\x80"
 
+#define HAND_SIZE 5
+
 typedef enum suits{ SPADE, CLUB, HEART, DIAMOND } SUITS;
 
 typedef enum values{ ACE=1, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT,
@@ -30,9 +32,6 @@ typedef struct card{
     unsigned int face:8;
 } CARD;
 
-typedef struct cardsToSwap{
-    unsigned int mask:5;
-} CARDS_TO_SWAP;
 
 void createDeck(CARD *);
 
@@ -41,8 +40,6 @@ void shuffleDeck(CARD *);
 void dealHand( CARD *, CARD *, int *);
 
 int scoreHand(CARD *);
-
-void swapCards(CARDS_TO_SWAP, CARD *, CARD *, int *);
 
 void drawCards(WINDOW *, WINDOW *, WINDOW *, WINDOW *, WINDOW *, CARD *hand);
 

@@ -9,7 +9,7 @@
 #include "poker.h"
 
 #define NEEDS_SHUFFLE 43
-#define HAND_SIZE 5
+
 
 /* dealHand adds the first five CARDS from current position
  * of deck, indicated by the value of cardsDealt, to another 
