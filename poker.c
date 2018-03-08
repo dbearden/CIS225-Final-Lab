@@ -160,6 +160,10 @@ int main(int argc, char *argv[]){
     
     // Let the user interact until q is entered
     do {        
+        for(int i = 0; i < 52; i++){
+            printf("%u%u ",deck[i].value,deck[i].suit);
+        }
+        printf("\n\n");
         // Get the user's keystroke
         choice = getch();
         switch(choice) {
@@ -195,8 +199,10 @@ int main(int argc, char *argv[]){
                 if(!dealOrDraw){
                     replaceCards(deck, hand, cursPos, &swapMask);
                 }
+                break;
             case SHUFFLE_DECK:
                 shuffleDeck(deck);                               
+                break;
         }
         
     } while(choice != QUIT);
@@ -336,7 +342,7 @@ void drawPlayGuide(WINDOW *playGuide, int dealOrDraw){
     playGuide = newwin(2, 30, 1, 1);
     wbkgd(playGuide, COLOR_PAIR(3));
     if(dealOrDraw){
-        mvwprintw(playGuide, 1, 1, "Press 'd' to deal");
+        mvwprintw(playGuide, 1, 1, "Press 'ENTER' to deal");
     }
     else{
         mvwprintw(playGuide, 1, 1, "Select cards to swap");
