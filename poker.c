@@ -286,42 +286,45 @@ void resetUI(WINDOW *card1, WINDOW *card2, WINDOW *card3,
     refresh();
 }
 
-// assumes the user will only select a card once.
-// needs work.
+//TODO: toggle MARK_CARD
+//somethinge like(?):
+//mvprintw(CURS_ROW, 
+//         (CURS_POS_X - 1), 
+//         (swapMask->mask & HAND_BIT_X) ? MARK_CARD : UNMARK_CARD);
 void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
     // swap cards in hand based on cursor position
     switch(cursPos){
         case CURS_POS_1:
-            // replace the first card
+            // Toggle the first card selection
             swapMask->mask ^= HAND_BIT_1;
-            // Mark that the card was selected for swap
+            // Mark that the card was selected for swap in display
             mvprintw( CURS_ROW, (CURS_POS_1 - 1), MARK_CARD);
             refresh();
             break;
                        
         case CURS_POS_2:
-            // Replace the second card.
+            // Toggle the second card.
             swapMask->mask ^= HAND_BIT_2;
             mvprintw(CURS_ROW, (CURS_POS_2 -1), MARK_CARD);
             refresh();
             break;
  
         case CURS_POS_3:
-            // Replace the third card.
+            // Toggle the third card.
             swapMask->mask ^= HAND_BIT_3;
             mvprintw(CURS_ROW,(CURS_POS_3 -1), MARK_CARD);
             refresh();
             break;
 
         case CURS_POS_4:
-            // Replace the fourth Card;
+            // Toggle the fourth Card;
             swapMask->mask ^= HAND_BIT_4;
             mvprintw(CURS_ROW,(CURS_POS_4 - 1), MARK_CARD);
             refresh();
             break;
 
             case CURS_POS_5:
-            // Replace the 5th Card
+            // Toggle the 5th Card
             swapMask->mask ^= HAND_BIT_5;
             mvprintw(CURS_ROW, (CURS_POS_5 - 1), MARK_CARD);
             refresh();
