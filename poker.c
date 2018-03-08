@@ -14,6 +14,7 @@
 
 /* Marker to swap cards */
 #define MARK_CARD "x"
+#define UNMARK_CARD " "
 
 /* Starting bankroll */
 #define START_BANK 1000
@@ -23,12 +24,12 @@
 #define DEAL 1;
 
 /* Menu options */
-#define MOVE_RIGHT 's'
+#define MOVE_RIGHT 'd'
 #define MOVE_LEFT 'a'
-#define SWAP_CARD 'f'
-#define DEAL_HAND 'd'
+#define SWAP_CARD ' '
+#define DEAL_HAND '\n'
 #define QUIT 'q'
-#define SHUFFLE_DECK 'g'
+#define SHUFFLE_DECK 's'
 
 /* Hand Results */
 #define ROYAL_FLUSH 2000
@@ -118,7 +119,6 @@ int main(int argc, char *argv[]){
     CARD deck[52];
     // create an array for 5 CARDs.
     CARD hand[HAND_SIZE];
-    CARD tempHand[HAND_SIZE];   
     // counter to keep track of how many cards have been dealt.    
     int cardsDealt;
     // Counter to keep track winnings.
@@ -196,8 +196,10 @@ int main(int argc, char *argv[]){
                 if(!dealOrDraw){
                     replaceCards(deck, hand, cursPos, &swapMask);
                 }
+                break;
             case SHUFFLE_DECK:
                 shuffleDeck(deck);                               
+                break;
         }
         
     } while(choice != QUIT);
@@ -287,11 +289,6 @@ void resetUI(WINDOW *card1, WINDOW *card2, WINDOW *card3,
     refresh();
 }
 
-//TODO: toggle MARK_CARD
-//somethinge like(?):
-//mvprintw(CURS_ROW, 
-//         (CURS_POS_X - 1), 
-//         (swapMask->mask & HAND_BIT_X) ? MARK_CARD : UNMARK_CARD);
 void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
     // swap cards in hand based on cursor position
     switch(cursPos){
@@ -299,35 +296,45 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the first card selection
             swapMask->mask ^= HAND_BIT_1;
             // Mark that the card was selected for swap in display
-            mvprintw( CURS_ROW, (CURS_POS_1 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
                        
         case CURS_POS_2:
             // Toggle the second card.
             swapMask->mask ^= HAND_BIT_2;
-            mvprintw(CURS_ROW, (CURS_POS_2 -1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_2 - 1), 
+                     (swapMask->mask & HAND_BIT_2) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
  
         case CURS_POS_3:
             // Toggle the third card.
             swapMask->mask ^= HAND_BIT_3;
-            mvprintw(CURS_ROW,(CURS_POS_3 -1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_3 - 1), 
+                     (swapMask->mask & HAND_BIT_3) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
         case CURS_POS_4:
             // Toggle the fourth Card;
             swapMask->mask ^= HAND_BIT_4;
-            mvprintw(CURS_ROW,(CURS_POS_4 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_4 - 1), 
+                     (swapMask->mask & HAND_BIT_4) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
             case CURS_POS_5:
             // Toggle the 5th Card
             swapMask->mask ^= HAND_BIT_5;
-            mvprintw(CURS_ROW, (CURS_POS_5 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_5 - 1), 
+                     (swapMask->mask & HAND_BIT_5) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;    
     }
@@ -338,7 +345,7 @@ void drawPlayGuide(WINDOW *playGuide, int dealOrDraw){
     playGuide = newwin(2, 30, 1, 1);
     wbkgd(playGuide, COLOR_PAIR(3));
     if(dealOrDraw){
-        mvwprintw(playGuide, 1, 1, "Press 'd' to deal");
+        mvwprintw(playGuide, 1, 1, "Press 'ENTER' to deal");
     }
     else{
         mvwprintw(playGuide, 1, 1, "Select cards to swap");
