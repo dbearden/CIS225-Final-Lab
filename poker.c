@@ -23,12 +23,12 @@
 #define DEAL 1;
 
 /* Menu options */
-#define MOVE_RIGHT 's'
+#define MOVE_RIGHT 'd'
 #define MOVE_LEFT 'a'
-#define SWAP_CARD 'f'
-#define DEAL_HAND 'd'
+#define SWAP_CARD ' '
+#define DEAL_HAND '\n'
 #define QUIT 'q'
-#define SHUFFLE_DECK 'g'
+#define SHUFFLE_DECK 's'
 
 /* Hand Results */
 #define ROYAL_FLUSH 2000
@@ -118,7 +118,6 @@ int main(int argc, char *argv[]){
     CARD deck[52];
     // create an array for 5 CARDs.
     CARD hand[HAND_SIZE];
-    CARD tempHand[HAND_SIZE];   
     // counter to keep track of how many cards have been dealt.    
     int cardsDealt;
     // Counter to keep track winnings.
