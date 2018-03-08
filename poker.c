@@ -42,6 +42,18 @@
 #define PAIR 50
 #define LOSE -50
 
+/* Bit values for swapping cards at a given position */
+#define HAND_BIT_1 0x10
+#define HAND_BIT_2 0x08
+#define HAND_BIT_3 0x04
+#define HAND_BIT_4 0x02
+#define HAND_BIT_5 0x01
+
+/* Mask for selecting which cards should be swapped */
+typedef struct cardsToSwap{
+    unsigned int mask:5;
+}CARDS_TO_SWAP;
+
 /* Moves the cursor to the next card */
 void moveCursRight(int*);
 
@@ -52,14 +64,14 @@ void moveCursLeft(int*);
 void dealRound( CARD *, CARD *, int *, int *, int *);
 
 /* Draw round actions */ 
-void drawRound(WINDOW *, CARD *, CARD*, int *, int *);
+void drawRound(WINDOW *, CARD *, int *, int *);
 
 /* Resets the UI for the next hand */
 void resetUI(WINDOW *, WINDOW *, WINDOW *, WINDOW *,
              WINDOW *, WINDOW *, WINDOW *, CARD *, int, int);
 
 /* Replaces selected cards with next card in the deck */
-void replaceCards(CARD *, CARD*, int *, int);
+void replaceCards(CARD *, CARD*, int, CARDS_TO_SWAP *);
 
 /* Reminds the user to deal a new hand or swap out cards */
 void drawPlayGuide(WINDOW *, int);
@@ -67,7 +79,10 @@ void drawPlayGuide(WINDOW *, int);
 /* Draws hand result */
 void drawResult(WINDOW *, int);
 /* sorts the hand for scoring */
-CARD *sortHand(CARD *, CARD *);
+void sortHand(CARD *, CARD *);
+
+/* swaps selected cards in the hand */
+void swapCards(CARD *, CARD *, int *, CARDS_TO_SWAP);
 
 int main(int argc, char *argv[]){
 
@@ -118,6 +133,10 @@ int main(int argc, char *argv[]){
     bankRoll =  START_BANK;
     cardsDealt = 0;
     
+    // Initialize the swap mask to 0
+    CARDS_TO_SWAP swapMask;
+    swapMask.mask = 0;
+
     // Fill the deck with CARDs
     createDeck(deck);
     
@@ -161,17 +180,21 @@ int main(int argc, char *argv[]){
                     refresh();                     
                 }
                 else {
-                    drawRound(resultWindow, hand, tempHand, &dealOrDraw, &bankRoll);
+                    swapCards(deck, hand, &cardsDealt, swapMask);
+                    drawRound(resultWindow, hand, &dealOrDraw, &bankRoll);
                 }
                 drawPlayGuide(playGuide, dealOrDraw);
                 resetUI(card1, card2, card3, card4, card5, instructions, 
                         bankRollWindow, hand, bankRoll, dealOrDraw);
+
+                // Reset swapMask after each dealing or replacement
+                swapMask.mask = 0;
                 break;
 
             case SWAP_CARD:
                 // Not a deal round so cards can be swapped
                 if(!dealOrDraw){
-                    replaceCards(deck, hand, &cardsDealt, cursPos);
+                    replaceCards(deck, hand, cursPos, &swapMask);
                 }
             case SHUFFLE_DECK:
                 shuffleDeck(deck);                               
@@ -225,14 +248,14 @@ void dealRound(CARD *deck, CARD *hand, int *cardsDealt,
     refresh();                    
 }
 
-void drawRound(WINDOW *resultWindow, CARD *hand, CARD *tempHand, 
-               int *dealOrDraw, int *bankRoll){
+void drawRound(WINDOW *resultWindow, CARD *hand, int *dealOrDraw, int *bankRoll){
+    CARD tempHand[HAND_SIZE];
     int score;
     // Draw round, start cursor at card 1
     // Card replacements take place in other
     // functions.           
     move(CURS_ROW, CURS_POS_1);
-    tempHand = sortHand(hand, tempHand);
+    sortHand(hand, tempHand);
     score = scoreHand(tempHand);
     // Score the hand and update score
     *bankRoll += score;
@@ -263,49 +286,46 @@ void resetUI(WINDOW *card1, WINDOW *card2, WINDOW *card3,
     refresh();
 }
 
-// assumes the user will only select a card once.
-// needs work.
-void replaceCards(CARD *deck, CARD *hand, int *cardsDealt,
-               int cursPos){
+//TODO: toggle MARK_CARD
+//somethinge like(?):
+//mvprintw(CURS_ROW, 
+//         (CURS_POS_X - 1), 
+//         (swapMask->mask & HAND_BIT_X) ? MARK_CARD : UNMARK_CARD);
+void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
     // swap cards in hand based on cursor position
     switch(cursPos){
         case CURS_POS_1:
-            // replace the first card
-            hand[0] = deck[*cardsDealt];
-            (*cardsDealt) ++;
-            // Mark that the card was selected for swap
+            // Toggle the first card selection
+            swapMask->mask ^= HAND_BIT_1;
+            // Mark that the card was selected for swap in display
             mvprintw( CURS_ROW, (CURS_POS_1 - 1), MARK_CARD);
             refresh();
             break;
                        
         case CURS_POS_2:
-            // Replace the second card.
-            hand[1] = deck[*cardsDealt];
-            (*cardsDealt) ++;
+            // Toggle the second card.
+            swapMask->mask ^= HAND_BIT_2;
             mvprintw(CURS_ROW, (CURS_POS_2 -1), MARK_CARD);
             refresh();
             break;
  
         case CURS_POS_3:
-            // Replace the third card.
-            hand[2] = deck[*cardsDealt];
-            (*cardsDealt) ++;
+            // Toggle the third card.
+            swapMask->mask ^= HAND_BIT_3;
             mvprintw(CURS_ROW,(CURS_POS_3 -1), MARK_CARD);
             refresh();
             break;
 
         case CURS_POS_4:
-            // Replace the fourth Card;
-            hand[3] = deck[*cardsDealt];
-            (*cardsDealt) ++;
+            // Toggle the fourth Card;
+            swapMask->mask ^= HAND_BIT_4;
             mvprintw(CURS_ROW,(CURS_POS_4 - 1), MARK_CARD);
             refresh();
             break;
 
             case CURS_POS_5:
-            // Replace the 5th Card
-            hand[4] = deck[*cardsDealt];
-            (*cardsDealt) ++;
+            // Toggle the 5th Card
+            swapMask->mask ^= HAND_BIT_5;
             mvprintw(CURS_ROW, (CURS_POS_5 - 1), MARK_CARD);
             refresh();
             break;    
@@ -365,7 +385,7 @@ void drawResult(WINDOW *resultWindow, int result){
     wrefresh(resultWindow);
 }
 
-CARD *sortHand(CARD *hand, CARD *sortedHand){
+void sortHand(CARD *hand, CARD *sortedHand){
     CARD temp;
     for(int i = 0; i < HAND_SIZE; i++){
         sortedHand[i] = hand[i];
@@ -379,6 +399,17 @@ CARD *sortHand(CARD *hand, CARD *sortedHand){
             }
         }
     }
-    return sortedHand;
 }
 
+void swapCards(CARD *deck, CARD *hand, int *cardsDealt, CARDS_TO_SWAP swapMask){
+    unsigned int checkMask = 0x10;
+    
+    int i;
+    for(i = 0; i < HAND_SIZE; i++){
+        if(swapMask.mask & checkMask){
+            hand[i] = deck[*cardsDealt];
+            (*cardsDealt)++;
+        }
+        swapMask.mask <<= 1;
+    }
+}
