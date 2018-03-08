@@ -64,7 +64,7 @@ void moveCursLeft(int*);
 void dealRound( CARD *, CARD *, int *, int *, int *);
 
 /* Draw round actions */ 
-void drawRound(WINDOW *, CARD *, CARD*, int *, int *);
+void drawRound(WINDOW *, CARD *, int *, int *);
 
 /* Resets the UI for the next hand */
 void resetUI(WINDOW *, WINDOW *, WINDOW *, WINDOW *,
@@ -79,7 +79,7 @@ void drawPlayGuide(WINDOW *, int);
 /* Draws hand result */
 void drawResult(WINDOW *, int);
 /* sorts the hand for scoring */
-CARD *sortHand(CARD *, CARD *);
+void sortHand(CARD *, CARD *);
 
 /* swaps selected cards in the hand */
 void swapCards(CARD *, CARD *, int *, CARDS_TO_SWAP);
@@ -181,7 +181,7 @@ int main(int argc, char *argv[]){
                 }
                 else {
                     swapCards(deck, hand, &cardsDealt, swapMask);
-                    drawRound(resultWindow, hand, tempHand, &dealOrDraw, &bankRoll);
+                    drawRound(resultWindow, hand, &dealOrDraw, &bankRoll);
                 }
                 drawPlayGuide(playGuide, dealOrDraw);
                 resetUI(card1, card2, card3, card4, card5, instructions, 
@@ -248,14 +248,14 @@ void dealRound(CARD *deck, CARD *hand, int *cardsDealt,
     refresh();                    
 }
 
-void drawRound(WINDOW *resultWindow, CARD *hand, CARD *tempHand, 
-               int *dealOrDraw, int *bankRoll){
+void drawRound(WINDOW *resultWindow, CARD *hand, int *dealOrDraw, int *bankRoll){
+    CARD tempHand[HAND_SIZE];
     int score;
     // Draw round, start cursor at card 1
     // Card replacements take place in other
     // functions.           
     move(CURS_ROW, CURS_POS_1);
-    tempHand = sortHand(hand, tempHand);
+    sortHand(hand, tempHand);
     score = scoreHand(tempHand);
     // Score the hand and update score
     *bankRoll += score;
@@ -385,7 +385,7 @@ void drawResult(WINDOW *resultWindow, int result){
     wrefresh(resultWindow);
 }
 
-CARD *sortHand(CARD *hand, CARD *sortedHand){
+void sortHand(CARD *hand, CARD *sortedHand){
     CARD temp;
     for(int i = 0; i < HAND_SIZE; i++){
         sortedHand[i] = hand[i];
@@ -399,7 +399,6 @@ CARD *sortHand(CARD *hand, CARD *sortedHand){
             }
         }
     }
-    return sortedHand;
 }
 
 void swapCards(CARD *deck, CARD *hand, int *cardsDealt, CARDS_TO_SWAP swapMask){
