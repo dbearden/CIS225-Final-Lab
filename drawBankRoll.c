@@ -15,4 +15,5 @@ void drawBankRoll(WINDOW *bankWindow, int bankroll){
     mvwprintw(bankWindow, 0, 1, "%s", "Your Bankroll");
     mvwprintw(bankWindow, 2, 1, "%d", bankroll);
     wrefresh(bankWindow);
+    delwin(bankWindow);
 }

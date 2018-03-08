@@ -201,6 +201,7 @@ int main(int argc, char *argv[]){
         }
         
     } while(choice != QUIT);
+    delwin(scoreTable);
     endwin();
 }
 
@@ -343,11 +344,12 @@ void drawPlayGuide(WINDOW *playGuide, int dealOrDraw){
         mvwprintw(playGuide, 1, 1, "Select cards to swap");
     }
     refresh();
-    wrefresh(playGuide);    
+    wrefresh(playGuide); 
+    delwin(playGuide);   
 }
 
 void drawResult(WINDOW *resultWindow, int result){
-    resultWindow = newwin(2, 20, 6, 10);
+    resultWindow = newwin(2, 20, 5, 10);
     wbkgd(resultWindow, COLOR_PAIR(3));
     switch(result){
         case ROYAL_FLUSH:
@@ -383,6 +385,7 @@ void drawResult(WINDOW *resultWindow, int result){
     }
     refresh();
     wrefresh(resultWindow);
+    delwin(resultWindow);
 }
 
 void sortHand(CARD *hand, CARD *sortedHand){
