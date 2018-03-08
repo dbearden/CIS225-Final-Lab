@@ -14,6 +14,7 @@
 
 /* Marker to swap cards */
 #define MARK_CARD "x"
+#define UNMARK_CARD ""
 
 /* Starting bankroll */
 #define START_BANK 1000
@@ -160,10 +161,6 @@ int main(int argc, char *argv[]){
     
     // Let the user interact until q is entered
     do {        
-        for(int i = 0; i < 52; i++){
-            printf("%u%u ",deck[i].value,deck[i].suit);
-        }
-        printf("\n\n");
         // Get the user's keystroke
         choice = getch();
         switch(choice) {
@@ -291,11 +288,6 @@ void resetUI(WINDOW *card1, WINDOW *card2, WINDOW *card3,
     refresh();
 }
 
-//TODO: toggle MARK_CARD
-//somethinge like(?):
-//mvprintw(CURS_ROW, 
-//         (CURS_POS_X - 1), 
-//         (swapMask->mask & HAND_BIT_X) ? MARK_CARD : UNMARK_CARD);
 void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
     // swap cards in hand based on cursor position
     switch(cursPos){
@@ -303,35 +295,45 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the first card selection
             swapMask->mask ^= HAND_BIT_1;
             // Mark that the card was selected for swap in display
-            mvprintw( CURS_ROW, (CURS_POS_1 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
                        
         case CURS_POS_2:
             // Toggle the second card.
             swapMask->mask ^= HAND_BIT_2;
-            mvprintw(CURS_ROW, (CURS_POS_2 -1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
  
         case CURS_POS_3:
             // Toggle the third card.
             swapMask->mask ^= HAND_BIT_3;
-            mvprintw(CURS_ROW,(CURS_POS_3 -1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
         case CURS_POS_4:
             // Toggle the fourth Card;
             swapMask->mask ^= HAND_BIT_4;
-            mvprintw(CURS_ROW,(CURS_POS_4 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
             case CURS_POS_5:
             // Toggle the 5th Card
             swapMask->mask ^= HAND_BIT_5;
-            mvprintw(CURS_ROW, (CURS_POS_5 - 1), MARK_CARD);
+            mvprintw(CURS_ROW, 
+                     (CURS_POS_1 - 1), 
+                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;    
     }
