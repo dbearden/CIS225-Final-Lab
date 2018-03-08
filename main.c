@@ -28,6 +28,19 @@
 #define SWAP_CARD 'f'
 #define DEAL_HAND 'd'
 #define QUIT 'q'
+#define SHUFFLE_DECK 'g'
+
+/* Hand Results */
+#define ROYAL_FLUSH 2000
+#define STRAIGHT_FLUSH 1000
+#define FOUR_KIND 500
+#define FULL_HOUSE 400
+#define FLUSH 250
+#define STRAIGHT 200
+#define THREE_KIND 150
+#define TWO_PAIR 100
+#define PAIR 50
+#define LOSE -50
 
 /* Moves the cursor to the next card */
 void moveCursRight(int*);
@@ -39,7 +52,7 @@ void moveCursLeft(int*);
 void dealRound( CARD *, CARD *, int *, int *, int *);
 
 /* Draw round actions */ 
-void drawRound( CARD *, CARD*, int *, int *);
+void drawRound(WINDOW *, CARD *, CARD*, int *, int *);
 
 /* Resets the UI for the next hand */
 void resetUI(WINDOW *, WINDOW *, WINDOW *, WINDOW *,
@@ -51,6 +64,8 @@ void replaceCards(CARD *, CARD*, int *, int);
 /* Reminds the user to deal a new hand or swap out cards */
 void drawPlayGuide(WINDOW *, int);
 
+/* Draws hand result */
+void drawResult(WINDOW *, int);
 /* sorts the hand for scoring */
 CARD *sortHand(CARD *, CARD *);
 
@@ -83,7 +98,7 @@ int main(int argc, char *argv[]){
     WINDOW *bankRollWindow;
     WINDOW *instructions;
     WINDOW *playGuide;    
-    
+    WINDOW *resultWindow;    
     // create an array for 52 CARDs.
     CARD deck[52];
     // create an array for 5 CARDs.
@@ -126,8 +141,7 @@ int main(int argc, char *argv[]){
     refresh();
     
     // Let the user interact until q is entered
-    do {
-                
+    do {        
         // Get the user's keystroke
         choice = getch();
         switch(choice) {
@@ -147,7 +161,7 @@ int main(int argc, char *argv[]){
                     refresh();                     
                 }
                 else {
-                    drawRound(hand, tempHand, &dealOrDraw, &bankRoll);
+                    drawRound(resultWindow, hand, tempHand, &dealOrDraw, &bankRoll);
                 }
                 drawPlayGuide(playGuide, dealOrDraw);
                 resetUI(card1, card2, card3, card4, card5, instructions, 
@@ -158,7 +172,9 @@ int main(int argc, char *argv[]){
                 // Not a deal round so cards can be swapped
                 if(!dealOrDraw){
                     replaceCards(deck, hand, &cardsDealt, cursPos);
-                }                                
+                }
+            case SHUFFLE_DECK:
+                shuffleDeck(deck);                               
         }
         
     } while(choice != QUIT);
@@ -209,14 +225,18 @@ void dealRound(CARD *deck, CARD *hand, int *cardsDealt,
     refresh();                    
 }
 
-void drawRound(CARD *hand, CARD *tempHand, int *dealOrDraw, int *bankRoll){
+void drawRound(WINDOW *resultWindow, CARD *hand, CARD *tempHand, 
+               int *dealOrDraw, int *bankRoll){
+    int score;
     // Draw round, start cursor at card 1
     // Card replacements take place in other
     // functions.           
     move(CURS_ROW, CURS_POS_1);
     tempHand = sortHand(hand, tempHand);
+    score = scoreHand(tempHand);
     // Score the hand and update score
-    *bankRoll += scoreHand(tempHand);
+    *bankRoll += score;
+    drawResult(resultWindow, score);
     // Set to deal round
     *dealOrDraw = DEAL;
     refresh();
@@ -304,6 +324,45 @@ void drawPlayGuide(WINDOW *playGuide, int dealOrDraw){
     }
     refresh();
     wrefresh(playGuide);    
+}
+
+void drawResult(WINDOW *resultWindow, int result){
+    resultWindow = newwin(2, 20, 6, 10);
+    wbkgd(resultWindow, COLOR_PAIR(3));
+    switch(result){
+        case ROYAL_FLUSH:
+            mvwprintw(resultWindow, 1, 1, "Royal Flush");
+            break;
+        case STRAIGHT_FLUSH:
+            mvwprintw(resultWindow, 1, 1, "Straight Flush");
+            break;
+        case FOUR_KIND:
+            mvwprintw(resultWindow, 1, 1, "4 of a Kind");
+            break;
+        case FULL_HOUSE:
+            mvwprintw(resultWindow, 1, 1, "Full House");
+            break;
+        case FLUSH:
+            mvwprintw(resultWindow, 1, 1, "Flush");
+            break;
+        case STRAIGHT:
+            mvwprintw(resultWindow, 1, 1, "Straight");
+            break;
+        case THREE_KIND:
+            mvwprintw(resultWindow, 1, 1, "Three of a kind");
+            break;
+        case TWO_PAIR:
+            mvwprintw(resultWindow, 1, 1, "Two Pair");
+            break;
+        case PAIR: 
+            mvwprintw(resultWindow, 1, 1, "Jacks or better");
+            break;
+        case LOSE:
+            mvwprintw(resultWindow, 1, 1, "You lose");
+            break;
+    }
+    refresh();
+    wrefresh(resultWindow);
 }
 
 CARD *sortHand(CARD *hand, CARD *sortedHand){
