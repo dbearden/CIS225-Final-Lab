@@ -14,7 +14,7 @@
 
 /* Marker to swap cards */
 #define MARK_CARD "x"
-#define UNMARK_CARD ""
+#define UNMARK_CARD " "
 
 /* Starting bankroll */
 #define START_BANK 1000
@@ -305,8 +305,8 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the second card.
             swapMask->mask ^= HAND_BIT_2;
             mvprintw(CURS_ROW, 
-                     (CURS_POS_1 - 1), 
-                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
+                     (CURS_POS_2 - 1), 
+                     (swapMask->mask & HAND_BIT_2) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
  
@@ -314,8 +314,8 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the third card.
             swapMask->mask ^= HAND_BIT_3;
             mvprintw(CURS_ROW, 
-                     (CURS_POS_1 - 1), 
-                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
+                     (CURS_POS_3 - 1), 
+                     (swapMask->mask & HAND_BIT_3) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
@@ -323,8 +323,8 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the fourth Card;
             swapMask->mask ^= HAND_BIT_4;
             mvprintw(CURS_ROW, 
-                     (CURS_POS_1 - 1), 
-                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
+                     (CURS_POS_4 - 1), 
+                     (swapMask->mask & HAND_BIT_4) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;
 
@@ -332,8 +332,8 @@ void replaceCards(CARD *deck, CARD *hand, int cursPos, CARDS_TO_SWAP *swapMask){
             // Toggle the 5th Card
             swapMask->mask ^= HAND_BIT_5;
             mvprintw(CURS_ROW, 
-                     (CURS_POS_1 - 1), 
-                     (swapMask->mask & HAND_BIT_1) ? MARK_CARD : UNMARK_CARD);
+                     (CURS_POS_5 - 1), 
+                     (swapMask->mask & HAND_BIT_5) ? MARK_CARD : UNMARK_CARD);
             refresh();
             break;    
     }
