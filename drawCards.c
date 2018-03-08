@@ -141,4 +141,5 @@ void _drawCard(WINDOW *cardWindow, CARD card ){
     mvwprintw(cardWindow, 8, 8, suit);
     
     wrefresh(cardWindow);
+    delwin(cardWindow);
 }
