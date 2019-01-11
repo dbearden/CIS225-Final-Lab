@@ -1,26 +1,5 @@
 # Poker Hand Group Lab
 
-Develop a program using the curses library for a graphical terminal application that displays and scores poker hands.
-
-### Steps:
-
-1. You now have a private group repository that is named poker-lab-YourGroupName where YourGroupName is your github group name. Do not make any public repo's containing code from this class.
-
-2. on cis2, issue the following commands ($ is the commandline prompt):
-```
-    $ git clone https://github.com/OC-CIS-225/poker-lab-YourGroupName.git (replace YourGroupName to match the name of your repo)
-    $ cd poker-lab-YourGroupName (replace YourGroupName as before)
-    $ git checkout -b YourGitHubId (replace YourGitHubId with your own individual github id, makes a branch for your own changes - each group member will have their own branch)
-```
-
-3. Now you are ready to work on your code! See the spec below these steps. There are two editors on cis2, "vi" if you want the retro experience, or "nano" if you want something similar to notepad.
-
-4. Once your code is complete, prepare the required presentation; there is no writeup for this, but there is a presentation of your team's process, tools, design, and results; you will also each individually report on the work of the team and each member's contributions. Those assignments are fully described on Canvas.
-
-5.  The team will need to work out a process to share code via GitHub; this can be done in several ways, a typicaly way will be demonstrated in class (with each team member using their own branch, and pull requests to master being used to integrate code from several people). You will be pushing code up to GitHub on a regular basis, so your final code will be the code in the master branch on github on the due date.
-   
-Good job! This lab let you work with a team and get a peak at how code sharing operates in tools like GitHub. There are many models for sharing development work, so it's good exposure to see how it's done in a small project first.
-
 # Program Specification:
 
 Develop a terminal-graphics program using the Linux curses library to display and score poker hands from a shuffled deck.
@@ -110,5 +89,3 @@ For scoring, use these values:
 * The program can assume a standard terminal-size window (it does not need to be responsive to resizing).
 
 * The program can use curses box()/border() capability (which requires putty settings to change) or Unicode line drawing, but should not mix the two (be consistent).
-
-Post useful resources, questions and answers on https://github.com/orgs/OC-CIS-225/projects/1
